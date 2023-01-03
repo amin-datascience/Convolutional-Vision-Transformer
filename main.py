@@ -197,8 +197,8 @@ def main(parameters):
 if __name__ == '__main__':
 
     parameters = {'batch_size': 512, 'lr': 0.0005, 'weight_decay': 0.05, 'img_size': 32, 'n_crops': 4, 
-                'layers' : 12, 'n_heads' : 8, 'patch_size' : 16, 'n_classes' : 0, 
-                'embed_dim' : 768, 'out_dim': 1024, 'model_temp' : 0.1, 
+                'layers' : 12, 'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
+                'embed_dim' : 768, 'model_temp' : 0.1, 
                 'center_momentum' : 0.996, 'max_epochs' : 100, 'clip_grad': 2.0, 
                 'mlp_ratio': 4., 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10., 
                 'locality_strength': 1., 'depth': 12, 'use_pos_embed': True}
