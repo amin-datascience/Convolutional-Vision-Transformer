@@ -148,7 +148,7 @@ def main(parameters):
     #=============================Preparing Data==================================
     path = F"/content/gdrive/MyDrive/ConvitDey"
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print('Starting Dino With Convit Backbone....')
+    print('Starting Convit ...')
     print(device)
     plain_augmentation = transforms.Compose([
         #transforms.Resize(32),
@@ -168,7 +168,7 @@ def main(parameters):
 
     #=============================Preparing The Model==================================
     model = Convit(img_size = parameters['img_size'], patch_size = parameters['patch_size'], 
-        n_classes = parameters['n_classes'], embed_dim = parameters['embed_dim'], layers = parameters['layers'], 
+        n_classes = parameters['n_classes'], embed_dim = parameters['embed_dim'], 
         n_heads = parameters['n_heads'], mlp_ratio = parameters['mlp_ratio'], qkv_bias = parameters['qkv_bias'], 
         drop = parameters['drop'], attn_drop = parameters['attn_drop'], local_layers = parameters['local_layers'], 
         locality_strength = parameters['locality_strength'], depth = parameters['depth'], use_pos_embed = parameters['use_pos_embed'])
@@ -197,7 +197,7 @@ def main(parameters):
 if __name__ == '__main__':
 
     parameters = {'batch_size': 512, 'lr': 0.0005, 'weight_decay': 0.05, 'img_size': 32, 'n_crops': 4, 
-                'layers' : 12, 'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
+                'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
                 'embed_dim' : 768, 'model_temp' : 0.1, 
                 'center_momentum' : 0.996, 'max_epochs' : 100, 'clip_grad': 2.0, 
                 'mlp_ratio': 4., 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10., 
