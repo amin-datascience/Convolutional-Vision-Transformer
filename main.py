@@ -1,8 +1,6 @@
 import torch 
 import torch.nn as nn 
-import numpy 
-from convit import DinoLoss, Convit, DinoHead
-from utils import DataAugmentation, MultiCropWrapper
+from convit import Convit
 from torchvision import datasets, transforms  
 import matplotlib.pyplot as plt  
 from torch.utils import data
