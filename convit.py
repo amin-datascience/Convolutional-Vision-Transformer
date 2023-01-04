@@ -337,7 +337,7 @@ class Convit(nn.Module):
 
 
     def forward(self, x):
-        n_samples, n_patches, embed_dim = x.shape
+        n_samples = x.shape[0]
 
         x = self.patch_embed(x)
         cls_token = self.cls_token.expand(n_samples, -1, -1)
