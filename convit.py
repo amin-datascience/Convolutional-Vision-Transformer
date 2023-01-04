@@ -263,7 +263,7 @@ class SelfAttention(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, n_heads, qkv_bias = False, mlp_ratio = 4., proj_drop = 0., attn_drop = 0., 
+    def __init__(self, dim, n_heads, qkv_bias = False, mlp_ratio = 4, proj_drop = 0., attn_drop = 0., 
                 use_gpsa = True, locality_strength = 1.):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim)
