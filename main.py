@@ -54,7 +54,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
         running_loss, correct = 0, 0
         for images, labels in train_loader:
             if device:
-                images = [img.to(device) for img in images]
+                images = images.to(device)
                 labels = labels.to(device)
 
             #================= Training ======================
@@ -200,7 +200,7 @@ if __name__ == '__main__':
                 'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
                 'embed_dim' : 768, 'model_temp' : 0.1, 
                 'center_momentum' : 0.996, 'max_epochs' : 100, 'clip_grad': 2.0, 
-                'mlp_ratio': 4., 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10., 
+                'mlp_ratio': 4, 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10, 
                 'locality_strength': 1., 'depth': 12, 'use_pos_embed': True}
 
     model, history = main(parameters)
@@ -209,7 +209,6 @@ if __name__ == '__main__':
     
     #=============================Validation & Visualizing Embeddings ==================================
     
-
 
 
 
