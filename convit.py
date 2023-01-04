@@ -320,7 +320,7 @@ class Convit(nn.Module):
         self.norm = nn.LayerNorm(embed_dim)     
         self.head = nn.Linear(embed_dim, n_classes) if n_classes > 0 else nn.Identity()
 
-        nn.init.trunc_normal_(self.cls, std = 0.02)
+        nn.init.trunc_normal_(self.cls_token, std = 0.02)
         self.head.apply(self._init_weights)
 
 
