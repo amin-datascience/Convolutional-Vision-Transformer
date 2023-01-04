@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 from torch.utils import data
 from utils import clip_gradient
 import warmup_scheduler
+import os 
 
 
 
 def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,  
                 validation_loader = None, batch_size = 128, scheduler = None, device = None, test_loader = None, 
-                train_loader_plain = None, clip_grad = 2.0):
+                train_loader_plain = None, clip_grad = 2.0, path = None):
 
     """Training function for ConViT.
 
@@ -115,7 +116,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 
         #====================== Saving the Model ============================  
         model_save_name = 'model.pt'
-        path_model = F"/content/gdrive/MyDrive/Dino_khordad/{model_save_name}"
+        path_model = F"{path}/{model_save_name}"
         torch.save(model.state_dict(), path_model)
     
     #====================== Testing ============================      
@@ -146,7 +147,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 def main(parameters):
 
     #=============================Preparing Data==================================
-    path = F"/content/gdrive/MyDrive/ConvitDey"
+    path = os.getcwd()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Starting Convit ...')
     print(device)
@@ -186,7 +187,7 @@ def main(parameters):
         optimizer = optimizer, loss_func = criterion, validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
         max_epochs = parameters['max_epochs'], train_loader_plain = train_loader_plain, 
-        clip_grad = parameters['clip_grad'])
+        clip_grad = parameters['clip_grad'], path = path)
 
 
     return model, history
@@ -198,7 +199,7 @@ if __name__ == '__main__':
 
     parameters = {'batch_size': 512, 'lr': 0.0005, 'weight_decay': 0.05, 'img_size': 32, 
                 'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
-                'embed_dim' : 384, 'model_temp' : 0.1, 'max_epochs' : 100, 'clip_grad': 2.0, 
+                'embed_dim' : 384, 'max_epochs' : 100, 'clip_grad': 2.0, 
                 'mlp_ratio': 4, 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10, 
                 'locality_strength': 1., 'depth': 12, 'use_pos_embed': True}
 
