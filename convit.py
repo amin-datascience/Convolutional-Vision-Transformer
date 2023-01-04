@@ -30,7 +30,7 @@ class PatchEmbedding(nn.Module):
 
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.Weight, 1.0)
+            nn.init.constant_(m.weight, 1.0)
 
 
     def forward(self, x):
@@ -64,7 +64,7 @@ class MLP(nn.Module):
 
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.Weight, 1.0)
+            nn.init.constant_(m.weight, 1.0)
 
 
     def forward(self, x):
@@ -113,7 +113,7 @@ class GPSA(nn.Module):
 
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.Weight, 1.0)
+            nn.init.constant_(m.weight, 1.0)
 
 
     
@@ -223,7 +223,7 @@ class SelfAttention(nn.Module):
 
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.Weight, 1.0)
+            nn.init.constant_(m.weight, 1.0)
 
 
     def forward(self, x):
@@ -333,7 +333,7 @@ class Convit(nn.Module):
 
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.Weight, 1.0)
+            nn.init.constant_(m.weight, 1.0)
 
 
     def forward(self, x):
@@ -353,6 +353,8 @@ class Convit(nn.Module):
             x = block(x)
 
         cls_embed  = self.norm(x)
+        cls_embed = cls_embed[:, 0]
+        
         x_cls = self.head(cls_embed)
 
         return x_cls
