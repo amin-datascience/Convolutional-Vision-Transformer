@@ -100,7 +100,7 @@ class GPSA(nn.Module):
         self.apply(self._init_weights)
 
         if use_local_init:
-            self.local_init(locality_strentgth = locality_strength)
+            self.local_init(locality_strength = locality_strength)
 
 
 
