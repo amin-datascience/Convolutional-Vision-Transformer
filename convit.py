@@ -305,7 +305,7 @@ class Convit(nn.Module):
         self.pos_drop = nn.Dropout(drop)
 
         if self.use_pos_embed:
-            self.pos_embed = nn.Parameter(torch.zeros(1, self.num_patches, embed_dim))
+            self.pos_embed = nn.Parameter(torch.zeros(1, self.n_patches, embed_dim))
             nn.init.trunc_normal_(self.pos_embed, std = 0.02)
         
         #dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
