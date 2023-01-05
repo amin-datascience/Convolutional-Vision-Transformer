@@ -1,11 +1,13 @@
 import torch 
 import torch.nn as nn 
 from convit import Convit
-from torchvision import datasets, transforms  
+from torchvision import datasets, transforms 
+import torch.backends.cudnn as cudnn 
+from torch.utils import data
 from timm.data import Mixup
 from timm.loss import LabelSmoothingCrossEntropy
 import matplotlib.pyplot as plt  
-from torch.utils import data
+
 from utils import clip_gradient
 import warmup_scheduler
 import os 
@@ -14,7 +16,7 @@ import os
 
 def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,  
                 validation_loader = None, batch_size = 128, scheduler = None, device = None, test_loader = None, 
-                train_loader_plain = None, clip_grad = 2.0, path = None, mixup = None):
+                train_loader_plain = None, clip_grad = 2.0, path = None, mixup_fn = None):
 
     """Training function for ConViT.
 
@@ -59,11 +61,16 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
             if device:
                 images = images.to(device)
                 labels = labels.to(device)
+           
+            if mixup_fn: 
+                images, labels = mixup_fn(images, labels)
 
             #================= Training ======================
             model.train()
-            outputs = model(images)
-            loss = loss_func(outputs, labels)
+            with torch.cuda.am.autocast():
+                outputs = model(images)
+                loss = loss_func(outputs, labels)
+            
             predictions = outputs.argmax(1)
             correct += int(sum(predictions == labels))
             running_loss += loss.item()
@@ -149,6 +156,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 def main(parameters):
 
     #=============================Preparing Data==================================
+    cudnn.benchmark = True
     path = os.getcwd()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Starting Convit ...')
@@ -199,7 +207,7 @@ def main(parameters):
         optimizer = optimizer, loss_func = criterion, validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
         max_epochs = parameters['max_epochs'], train_loader_plain = train_loader_plain, 
-        clip_grad = parameters['clip_grad'], path = path, mixup = mixup)
+        clip_grad = parameters['clip_grad'], path = path, mixup_fn = mixup)
 
 
     return model, history
