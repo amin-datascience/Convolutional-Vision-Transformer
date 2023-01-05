@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn 
 from convit import Convit
 from torchvision import datasets, transforms  
+from timm.data import Mixup
+from timm.loss import LabelSmoothingCrossEntropy
 import matplotlib.pyplot as plt  
 from torch.utils import data
 from utils import clip_gradient
@@ -12,7 +14,7 @@ import os
 
 def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,  
                 validation_loader = None, batch_size = 128, scheduler = None, device = None, test_loader = None, 
-                train_loader_plain = None, clip_grad = 2.0, path = None):
+                train_loader_plain = None, clip_grad = 2.0, path = None, mixup = None):
 
     """Training function for ConViT.
 
@@ -178,7 +180,17 @@ def main(parameters):
     print('The number of trainable parameters is : {}'.format(n_parameters))
 
     model = model.to(device)
+    
+    if parameters['mixup']:
+        mixup = Mixup(mixup_alpha = parameters['mixup'], cutmix_alpha = parameters['cutmix'], cutmix_minmax = parameters['cutmix_minmax'],
+                prob = parameters['prob'], switch_prob=parameters['switch_prob'], mode = parameters['mode'],
+                label_smoothing = parameters['label_smoothing'], num_classes = parameters['n_classes']) 
+
     criterion = nn.CrossEntropyLoss().to(device)
+
+    if parameters['label_smothing']:
+        criterion = LabelSmoothingCrossEntropy(smoothing = parameters['label_smoothing']).to(device)
+
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
     base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
     scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
@@ -187,7 +199,7 @@ def main(parameters):
         optimizer = optimizer, loss_func = criterion, validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
         max_epochs = parameters['max_epochs'], train_loader_plain = train_loader_plain, 
-        clip_grad = parameters['clip_grad'], path = path)
+        clip_grad = parameters['clip_grad'], path = path, mixup = mixup)
 
 
     return model, history
@@ -196,17 +208,19 @@ def main(parameters):
 
 
 if __name__ == '__main__':
-
+    #Replace Parameters with argparse immediately
     parameters = {'batch_size': 512, 'lr': 0.0005, 'weight_decay': 0.05, 'img_size': 32, 
                 'n_heads' : 8, 'patch_size' : 8, 'n_classes' : 10, 
                 'embed_dim' : 384, 'max_epochs' : 100, 'clip_grad': 2.0, 
                 'mlp_ratio': 4, 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10, 
-                'locality_strength': 1., 'depth': 12, 'use_pos_embed': True}
+                'locality_strength': 1., 'depth': 12, 'use_pos_embed': True,'mixup': 0.8, 
+                'cutmix':1 , 'cutmix_minmax':None, 'prob': 1, 'switch_prob': 0.5, 'mode': 'batch', 
+                'label_smoothing':0.1}
 
     model, history = main(parameters)
     
     
-    
+
     #=============================Validation & Visualizing Embeddings ==================================
     
 
