@@ -67,7 +67,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 
             #================= Training ======================
             model.train()
-            with torch.cuda.am.autocast():
+            with torch.cuda.amp.autocast():
                 outputs = model(images)
                 loss = loss_func(outputs, labels)
             
