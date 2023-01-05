@@ -196,7 +196,7 @@ def main(parameters):
 
     criterion = nn.CrossEntropyLoss().to(device)
 
-    if parameters['label_smothing']:
+    if parameters['label_smoothing']:
         criterion = LabelSmoothingCrossEntropy(smoothing = parameters['label_smoothing']).to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
