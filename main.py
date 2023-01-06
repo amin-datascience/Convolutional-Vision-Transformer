@@ -6,6 +6,7 @@ import torch.backends.cudnn as cudnn
 from torch.utils import data
 from timm.data import Mixup
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
+from timm.scheduler import create_scheduler
 import matplotlib.pyplot as plt  
 
 from utils import clip_gradient
@@ -202,9 +203,12 @@ def main(parameters):
         val_criterion = nn.CrossEntropyLoss().to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
-    base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
-    scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
-    
+    #base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
+    #scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
+    scheduler, _ = create_scheduler(optimizer = optimizer, sched = 'cosine', lr = parameters['lr'], warmup_lr = 1e-6, min_lr = 1e-5, 
+        decay_epochs = 30, warmup_epochs = 5, cooldown_epochs = 10, patience_epochs = 10, decay_rate = 0.1)
+
+
     model, history = train_func(train_loader = train_loader, model = model, 
         optimizer = optimizer, loss_func = criterion, loss_func_val = val_criterion , validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
