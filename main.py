@@ -16,7 +16,7 @@ import os
 
 def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,  
                 validation_loader = None, batch_size = 128, scheduler = None, device = None, test_loader = None, 
-                train_loader_plain = None, clip_grad = 2.0, path = None, mixup_fn = None):
+                loss_func_val = None, clip_grad = 2.0, path = None, mixup_fn = None):
 
     """Training function for ConViT.
 
@@ -109,7 +109,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 
                 with torch.cuda.amp.autocast():
                     outputs = model(val_images)
-                    loss = loss_func(outputs, val_labels)
+                    loss = loss_func_val(outputs, val_labels)
 
                 _, predictions = outputs.max(1)
                 val_corr += int(sum(predictions == val_labels))
@@ -199,15 +199,16 @@ def main(parameters):
 
     criterion = nn.CrossEntropyLoss().to(device)
 
-    if parameters['label_smoothing']:
+    if parameters['mixup']:
         criterion = SoftTargetCrossEntropy()
+        val_criterion = nn.CrossEntropyLoss().to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
     base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
     scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
     
     model, history = train_func(train_loader = train_loader, model = model, 
-        optimizer = optimizer, loss_func = criterion, validation_loader = val_loader, 
+        optimizer = optimizer, loss_func = criterion, loss_func_val = val_criterion , validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
         max_epochs = parameters['max_epochs'], train_loader_plain = train_loader_plain, 
         clip_grad = parameters['clip_grad'], path = path, mixup_fn = mixup)
