@@ -5,7 +5,7 @@ from torchvision import datasets, transforms
 import torch.backends.cudnn as cudnn 
 from torch.utils import data
 from timm.data import Mixup
-from timm.loss import LabelSmoothingCrossEntropy
+from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 import matplotlib.pyplot as plt  
 
 from utils import clip_gradient
@@ -200,7 +200,7 @@ def main(parameters):
     criterion = nn.CrossEntropyLoss().to(device)
 
     if parameters['label_smoothing']:
-        criterion = LabelSmoothingCrossEntropy(smoothing = parameters['label_smoothing'])
+        criterion = SoftTargetCrossEntropy()
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
     base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
