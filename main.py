@@ -160,6 +160,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
 def get_args_parser():
 
     parser = argparse.ArgumentParser('ConViT training and evaluation script', add_help=False)
+    parser.add_argument('--epochs', default=300, type=int)
     parser.add_argument('--sched', default='cosine', type=str, metavar='SCHEDULER',
                         help='LR scheduler (default: "cosine"')
     parser.add_argument('--lr', type=float, default=5e-4, metavar='LR',
