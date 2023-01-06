@@ -200,7 +200,7 @@ def main(parameters):
     criterion = nn.CrossEntropyLoss().to(device)
 
     if parameters['label_smoothing']:
-        criterion = LabelSmoothingCrossEntropy(smoothing = parameters['label_smoothing']).to(device)
+        criterion = LabelSmoothingCrossEntropy(smoothing = parameters['label_smoothing'])
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
     base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
