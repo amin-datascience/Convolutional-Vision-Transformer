@@ -61,17 +61,17 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
             if device:
                 images = images.to(device)
                 labels = labels.to(device)
-           
+                print('image shape {}, labels shape {}    '.format(images.shape, labels.shape), end = '\n')  ##
             if mixup_fn: 
                 images, labels = mixup_fn(images, labels)
-
+                print('mixup image shape {}, labels shape {}    '.format(images.shape, labels.shape), end = '\n') ##
             #================= Training ======================
             model.train()
             loss_func.train()
             with torch.cuda.amp.autocast():
                 outputs = model(images)
                 loss = loss_func(outputs, labels)
-            
+                print('otput shape : {}'.format( outputs.shape ))  ##
             predictions = outputs.argmax(1)
             correct += int(sum(predictions == labels))
             running_loss += loss.item()
