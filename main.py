@@ -171,13 +171,11 @@ def main(parameters):
 
     dataset_train = datasets.CIFAR10(path, download = True, train = True, transform = plain_augmentation)
     dataset_test = datasets.CIFAR10(path, download = True, train = False, transform = plain_augmentation)
-    dataset_train_evaluation = datasets.CIFAR10(path, download = True, train = True, transform = plain_augmentation)
     dataset_validation, dataset_test = torch.utils.data.random_split(dataset_test, [8000, 2000])
 
 
     train_loader = data.DataLoader(dataset_train, batch_size = parameters['batch_size'], drop_last = True, num_workers = 2)
     val_loader = data.DataLoader(dataset_validation, batch_size = parameters['batch_size'], drop_last = True, num_workers = 2)
-    train_loader_plain = data.DataLoader(dataset_train_evaluation, batch_size = parameters['batch_size'], drop_last = True, num_workers = 2)
 
 
     #=============================Preparing The Model==================================
@@ -210,8 +208,7 @@ def main(parameters):
     model, history = train_func(train_loader = train_loader, model = model, 
         optimizer = optimizer, loss_func = criterion, loss_func_val = val_criterion , validation_loader = val_loader, 
         device = device, scheduler = scheduler, batch_size = parameters['batch_size'], 
-        max_epochs = parameters['max_epochs'], train_loader_plain = train_loader_plain, 
-        clip_grad = parameters['clip_grad'], path = path, mixup_fn = mixup)
+        max_epochs = parameters['max_epochs'], clip_grad = parameters['clip_grad'], path = path, mixup_fn = mixup)
 
 
     return model, history
