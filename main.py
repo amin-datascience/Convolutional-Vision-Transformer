@@ -237,13 +237,13 @@ def main(parameters):
         val_criterion = nn.CrossEntropyLoss().to(device)
 
     #Adding parser
-    parser = argparse.ArgumentParser('ConViT training and evaluation script', parents=[get_args_parser()])
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser('ConViT training and evaluation script', parents=[get_args_parser()])
+    #args = parser.parse_args()
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
-    #base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
-    #scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
-    scheduler, _ = create_scheduler(args, optimizer)
+    base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
+    scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
+    #scheduler, _ = create_scheduler(args, optimizer)
 
 
     model, history = train_func(train_loader = train_loader, model = model, 
