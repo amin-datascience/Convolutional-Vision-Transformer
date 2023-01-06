@@ -73,7 +73,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
                 loss = loss_func(outputs, labels)
                 print('otput shape : {}'.format( outputs.shape ))  ##
             predictions = outputs.argmax(1)
-            correct += int(sum(predictions == labels))
+            correct += int(sum(predictions == labels.argmax(1)))
             running_loss += loss.item()
 
 
