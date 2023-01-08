@@ -200,7 +200,7 @@ def main(parameters):
     print('Starting Convit ...')
     print(device)
     plain_augmentation = transforms.Compose([
-        transforms.Resize(224), #update
+        transforms.Resize(224), #Update New
         transforms.ToTensor(), 
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
 
