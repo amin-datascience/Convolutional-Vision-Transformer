@@ -241,7 +241,7 @@ def main(parameters):
     #args = parser.parse_args()
 
     optimizer = torch.optim.AdamW(model.parameters(), lr = parameters['lr'], weight_decay = parameters['weight_decay'])
-    base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = 1e-6)
+    base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 100, eta_min = parameters['eta_min'])
     scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=5, after_scheduler = base_scheduler)
     #scheduler, _ = create_scheduler(args, optimizer)
 
@@ -265,7 +265,7 @@ if __name__ == '__main__':
                 'mlp_ratio': 4, 'qkv_bias': False, 'drop': 0., 'attn_drop': 0., 'local_layers':10, 
                 'locality_strength': 1., 'depth': 12, 'use_pos_embed': True,'mixup': 0.8, 
                 'cutmix':1 , 'cutmix_minmax':None, 'prob': 1, 'switch_prob': 0.5, 'mode': 'batch', 
-                'label_smoothing':0.1}
+                'label_smoothing':0.1, 'eta_min': 1e-7}
 
     model, history = main(parameters)
     
