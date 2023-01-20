@@ -89,7 +89,7 @@ def train_func(train_loader, model, optimizer, loss_func, max_epochs = 100,
         loss_epoch = running_loss / n_batches_train
         accuracy_epoch = correct / n_samples_train
         
-        scheduler.step(epoch)
+        scheduler.step()
         losses.append(loss_epoch)
         accuracy.append(accuracy_epoch)
 
